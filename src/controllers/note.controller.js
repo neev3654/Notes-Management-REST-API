@@ -106,7 +106,32 @@ const getAllNotes = async (req, res) => {
 // Get a single note by ID
 const getNoteById = async (req, res) => {
   try {
-    // Implementation here
+    const { id } = req.params;
+
+    // Validate ObjectId
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid note ID',
+        data: null,
+      });
+    }
+
+    const note = await Note.findById(id);
+
+    if (!note) {
+      return res.status(404).json({
+        success: false,
+        message: 'Note not found',
+        data: null,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Note fetched successfully',
+      data: note,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
