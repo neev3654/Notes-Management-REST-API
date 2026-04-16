@@ -291,7 +291,35 @@ const deleteNote = async (req, res) => {
 // Delete multiple notes
 const deleteBulkNotes = async (req, res) => {
   try {
-    // Implementation here
+    const { ids } = req.body;
+
+    // Validation
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'IDs array is required and must not be empty',
+        data: null,
+      });
+    }
+
+    // Validate each ID
+    for (const id of ids) {
+      if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid note ID in array',
+          data: null,
+        });
+      }
+    }
+
+    const result = await Note.deleteMany({ _id: { $in: ids } });
+
+    res.status(200).json({
+      success: true,
+      message: `${result.deletedCount} notes deleted successfully`,
+      data: null,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
