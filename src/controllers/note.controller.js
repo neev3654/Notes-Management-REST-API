@@ -253,7 +253,32 @@ const updateNote = async (req, res) => {
 // Delete a single note
 const deleteNote = async (req, res) => {
   try {
-    // Implementation here
+    const { id } = req.params;
+
+    // Validate ObjectId
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid note ID',
+        data: null,
+      });
+    }
+
+    const note = await Note.findByIdAndDelete(id);
+
+    if (!note) {
+      return res.status(404).json({
+        success: false,
+        message: 'Note not found',
+        data: null,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Note deleted successfully',
+      data: null,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
