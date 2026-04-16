@@ -3,8 +3,32 @@ const Note = require('../models/note.model');
 // Create a single note
 const createNote = async (req, res) => {
   try {
-    // Implementation here
+    const { title, content, category, isPinned } = req.body;
+
+    // Validation
+    if (!title || !content) {
+      return res.status(400).json({
+        success: false,
+        message: 'Title and content are required',
+        data: null,
+      });
+    }
+
+    const note = await Note.create({ title, content, category, isPinned });
+
+    res.status(201).json({
+      success: true,
+      message: 'Note created successfully',
+      data: note,
+    });
   } catch (error) {
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+        data: null,
+      });
+    }
     res.status(500).json({
       success: false,
       message: 'Internal server error',
