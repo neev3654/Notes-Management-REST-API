@@ -1,4 +1,4 @@
-# Notes Management REST API - Assignment 01
+# Notes Management REST API 
 
 A clean, production-ready REST API for managing notes built with Node.js, Express, and MongoDB. This project strictly follows the standard HTTP response codes and RESTful conventions, focusing entirely on clean API design, precise routing, and structured database operations.
 
